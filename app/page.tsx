@@ -756,7 +756,7 @@ const FileViewer: React.FC = () => {
 
         {/* CONTROLS & SEARCH BAR */}
         {!loading && !error && (
-          <div className="glass-panel rounded-2xl p-4 mb-6 border border-white/10 shadow-lg">
+          <div className="glass-panel rounded-2xl p-4 mb-6 border border-white/10 shadow-lg relative z-30">
             <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
               
               {/* Left Side: Filter Categories Dropdown & Group by toggle */}
