@@ -2,13 +2,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { UTApi } from 'uploadthing/server';
 
-// UTApi instance'ını initialize et
-const utapi = new UTApi();
+export const dynamic = 'force-dynamic';
+
+// Lazy initialize UTApi to prevent build-time crashes when UPLOADTHING_SECRET is missing.
+let utapiInstance: UTApi | null = null;
+const getUtapi = () => {
+  if (!utapiInstance) {
+    utapiInstance = new UTApi();
+  }
+  return utapiInstance;
+};
 
 export async function GET(request: NextRequest) {
   try {
     // UploadThing'den dosyaları listele
-    const response = await utapi.listFiles();
+    const response = await getUtapi().listFiles();
     
     // Response yapısını kontrol et
     if (!response || !response.files) {
@@ -70,7 +78,7 @@ export async function DELETE(request: NextRequest) {
     }
     
     // Dosyayı sil
-    const deleteResponse = await utapi.deleteFiles([fileKey]);
+    const deleteResponse = await getUtapi().deleteFiles([fileKey]);
     
     // Silme işleminin başarılı olup olmadığını kontrol et
     if (deleteResponse.success) {
