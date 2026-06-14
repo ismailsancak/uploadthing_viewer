@@ -8,6 +8,20 @@ export const dynamic = 'force-dynamic';
 let utapiInstance: UTApi | null = null;
 const getUtapi = () => {
   if (!utapiInstance) {
+    // V6 SDK uyumluluğu için UPLOADTHING_TOKEN'ı çözüp SECRET ve APP_ID olarak set edelim
+    if (process.env.UPLOADTHING_TOKEN && !process.env.UPLOADTHING_SECRET) {
+      try {
+        const decoded = JSON.parse(Buffer.from(process.env.UPLOADTHING_TOKEN, 'base64').toString('utf-8'));
+        if (decoded.apiKey) {
+          process.env.UPLOADTHING_SECRET = decoded.apiKey;
+        }
+        if (decoded.appId) {
+          process.env.UPLOADTHING_APP_ID = decoded.appId;
+        }
+      } catch (e) {
+        console.error("UploadThing token parse hatası:", e);
+      }
+    }
     utapiInstance = new UTApi();
   }
   return utapiInstance;
